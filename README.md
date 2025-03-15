@@ -26,3 +26,5 @@
 ### Updating a Customer
 - Users select a customer to update.
 - The form is edited and submitted via an Ajax PUT request.
+
+![Ajax](https://github.com/user-attachments/assets/fe90a26c-aa7b-46d3-85bf-73d96d87910c)
