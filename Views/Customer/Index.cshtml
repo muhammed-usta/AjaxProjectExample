@@ -1,0 +1,141 @@
+﻿﻿@{
+    ViewData["Title"] = "Index";
+}
+
+<link href="~/lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+
+<h1>Ajax Customer Operations</h1>
+<br />
+<button class="btn btn-primary" id="btn1">Customer List</button>
+<button class="btn btn-info" id="btn2">Add Customer</button>
+<button class="btn btn-danger" id="btn3">Delete Customer</button>
+<button class="btn btn-success" id="btn4">Update Customer</button>
+<button class="btn btn-warning" id="btn5">Get Customer</button>
+
+<hr />
+
+<div class="alert alert-primary">Customer List</div>
+<div id="customerList"></div>
+
+<hr />
+
+<div>
+    <label>Customer Name</label>
+    <input type="text" id="txtCustomerName" class="form-control" />
+    <br />
+    <label>Customer Surname</label>
+    <input type="text" id="txtCustomerSurname" class="form-control" />
+</div>
+
+<hr />
+
+<div>
+    <input type="text" class="form-control" id="txtCustomerDeleteId" placeholder="Enter the ID to be deleted" />
+</div>
+
+<hr />
+
+<div>
+    <input type="text" class="form-control" id="txtCustomerEditId" placeholder="Enter the customer id to be updated" />
+    <br />
+    <input type="text" class="form-control" id="txtCustomerEditName" placeholder="Enter the customer name to be updated" />
+    <br />
+    <input type="text" class="form-control" id="txtCustomerEditSurname" placeholder="Enter the customer surname to be updated" />
+    <br />
+</div>
+
+<hr />
+
+<div>
+    <input type="text" class="form-control" id="txtGetId" placeholder="Customer Id from the customer that you want to get data" />
+</div>
+
+<script>
+    $("#btn1").click(function (){
+        $.ajax({
+            contentType: "application/json",
+            dataType:"json",
+            type:"GET",
+            url:"/Customer/CustomerList",
+            success: function (funk1){
+                let customers = jQuery.parseJSON(funk1);
+                console.log(customers);
+
+                let tableHtml = `<table class="table table-bordered">`
+                + "<tr>"
+                + "<th>Customer Id</th>"
+                + "<th>Customer Name</th>"
+                + "<th>Customer Surname</th>"
+                + "</tr>"
+
+                $.each(customers, (index, value) => {
+                    tableHtml += `<tr>`
+                    + `<td>${value.CustomerId}</td>`
+                    + `<td>${value.CustomerName}</td>`
+                    + `<td>${value.CustomerSurname}</td>`
+                    + `</tr>`
+                });
+                tableHtml += "</table>";
+                $("#customerList").html(tableHtml);
+            }
+        });
+    });
+
+    $("#btn2").click(function (){
+        let values = {
+            CustomerName: $("#txtCustomerName").val(),
+            CustomerSurname: $("#txtCustomerSurname").val()
+        };
+
+        $.ajax({
+            url: "/Customer/CreateCustomer/",
+            data: values,
+            success: function (funk2){
+                let result = jQuery.parseJSON(funk2);
+                swal("Customer added succesfully", "Customer added!", "success");
+            }
+        });
+    });
+
+    $("#btn3").click(function(){
+        let id = $("#txtCustomerDeleteId").val();
+        $.ajax({
+            url: "/Customer/DeleteCustomer/" + id,
+            success: function(funk3){
+            swal("Customer deleted succesfully", "Customer deleted!", "success");
+            }
+        });
+    });
+
+    $("#btn4").click(function(){
+        let values = {
+            CustomerId: $("#txtCustomerEditId").val(),
+            CustomerName: $("#txtCustomerEditName").val(),
+            CustomerSurname: $("#txtCustomerEditSurname").val()
+        };
+
+        $.ajax({
+            url: "/Customer/UpdateCustomer/",
+            data: values,
+            success: function(funk4){
+               swal("Customer updated succesfully", "Customer Updated!", "success")
+            }
+        });
+    });
+
+    $("#btn5").click(function() {
+        let id = $("#txtGetId").val();
+        $.ajax({
+            contentType: "application/json",
+            dataType: "json",
+            url: "/Customer/GetCustomer/" + id,
+            success: function(funk5){
+                let result = jQuery.parseJSON(funk5);
+                console.log(result);
+            }
+        });
+    });
+</script>
